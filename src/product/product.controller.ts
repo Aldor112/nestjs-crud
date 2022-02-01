@@ -17,11 +17,14 @@ export class ProductController {
     }
 
     @Get('/')
-    async getProducts(@Res() res){
-       let response = await this.productSvc.getProducts();
+    async getProducts(@Res() res, @Query('page') page, @Query('limit')limit){
+       let response = await this.productSvc.getProducts(page,limit);
+       let count = await this.productSvc.countTotal();
 
        return res.status(HttpStatus.OK).json({
-        products: response
+        products: response,
+        totalPages: Math.ceil(count/limit), //calculo del numero de paginas
+        currentPage:parseInt(page) //pagina actual
        })
     }
 

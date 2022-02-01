@@ -11,9 +11,21 @@ export class ProductService {
     @InjectModel('Product') private readonly productModel: Model<Product>,
     ){}
     
-   async getProducts(): Promise<Product[]> {
-     const products = await this.productModel.find();
+   async getProducts(page?:any, limit?:any): Promise<Product[]> {
+     //const products = await this.productModel.find();
+      limit = parseInt(limit);
+      page = parseInt(page);
+     const products = await this.productModel.find()//paginador
+     .limit(limit * 1)
+     .skip((page - 1) * limit)
+     .exec();
+
      return products;
+    }
+
+    async countTotal(){//cuenta de los items en la pase de datos
+      const count = await this.productModel.countDocuments();
+      return count;
     }
 
     async getProduct(productId: string): Promise<Product>{
